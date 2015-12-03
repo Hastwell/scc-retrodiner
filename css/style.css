@@ -788,3 +788,8 @@ table td
 {
 	border: 1px solid gray; padding-left: 0.5em; padding-right: 0.5em;
 }
+
+nav
+{
+	text-align: center; display: block;
+}

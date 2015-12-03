@@ -7,6 +7,7 @@
 ###################################
 require('./templates/config.php');
 include('./templates/header.php');
+include('./includes/Pager.php');
 function mkLabel($for, $text)
 {
 	return "<label for=\"$for\" class=\"frmLabel\">$text</label>";
@@ -75,12 +76,18 @@ function printTableRow($rowdta, $tag = "td")
 					if($db->connect_errno > 0){
 					    die('Unable to connect to database [' . $db->connect_error . ']');
 					}
+					$firstArrow = "&#x21e4;"; // left arrow with tabstop
+					$lastArrow = "&#x21e5;"; // left arrow with tabstop
+					
+					$prevArrow = "&#x2190;"; // left arrow
+					$nextArrow = "&#x2192;"; // right arrow
+					$myPager = new Pager(4,$firstArrow,$prevArrow,$nextArrow,$lastArrow);
 					
 					$sql = <<<SQLSTATEMENT
 					SELECT inventoryID, inventoryImagePath, inventoryQuantity, manufacturerName, inventoryProductName FROM inventory
 					INNER JOIN manufacturers ON inventory.manufacturer = manufacturers.manufacturerID;
 SQLSTATEMENT;
-					
+					$sql = $myPager->loadSQL($sql,$db);
 					
 					if(!$result = $db->query($sql))
 					{
@@ -116,5 +123,6 @@ SQLSTATEMENT;
 	<li>
 	</li>
 </ul>
+<?php echo $myPager->showNAV(); ?>
 <!-- begin footer -->
 <?php include('./templates/footer.php'); ?>
